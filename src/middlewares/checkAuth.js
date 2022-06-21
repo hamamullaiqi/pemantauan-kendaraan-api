@@ -6,7 +6,7 @@ console.log(authHeader);
 	const token = authHeader && authHeader.split(" ")[1];
     console.log(token);
 	if (!token) {
-		return res.status(404).send({
+		return res.status(401).send({
 			message: "Access Denied",
 		});
 	}

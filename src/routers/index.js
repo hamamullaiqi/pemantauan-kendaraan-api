@@ -8,7 +8,7 @@ router.post("/register", register);
 router.post("/login", login);
 
 //checkAuth
-router.get("/check-auth",  checkAuth, auth);
+router.get("/check-auth", auth, checkAuth,);
 
 
 module.exports = router;
