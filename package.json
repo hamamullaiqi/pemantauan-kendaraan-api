@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "name": "Dwi-backend",
     "version": "1.0.0",
     "description": "",
@@ -26,3 +27,32 @@
         "nodemon": "^2.0.16"
     }
 }
+=======
+  "name": "dwi-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.0",
+    "sequelize-cli": "^6.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
+>>>>>>> 39d97aafdf6b5f2ce6f34a9c6dae532a90384ee5

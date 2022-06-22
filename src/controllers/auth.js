@@ -139,6 +139,7 @@ exports.login = async (req, res) => {
 exports.checkAuth = async (req, res) => {
     try {
         const id = req.user.id;
+        console.log(id);
 
         const dataUser = await user.findOne({
             where: {
@@ -149,11 +150,11 @@ exports.checkAuth = async (req, res) => {
             },
         });
 
-        // if (!dataUser) {
-        // 	return res.status(404).send({
-        // 		status: "failed",
-        // 	});
-        // }
+        if (!dataUser) {
+        	return res.status(404).send({
+        		status: "failed",
+        	});
+        }
 
         console.log(dataUser);
 
