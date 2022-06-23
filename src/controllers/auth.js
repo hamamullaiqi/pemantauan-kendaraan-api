@@ -7,175 +7,175 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
-    const schema = Joi.object({
-        fullname: Joi.string().min(5).required(),
-        email: Joi.string().email().min(5).required(),
-        password: Joi.string().min(6).required(),
-        role: Joi.string().required(),
+  const schema = Joi.object({
+    username: Joi.string().min(5).required(),
+    email: Joi.string().email().min(5).required(),
+    password: Joi.string().min(6).required(),
+    // role: Joi.string().required(),
+  });
+
+  const { error } = schema.validate(req.body);
+
+  if (error)
+    return res.status(400).send({
+      error: {
+        message: error.details[0].message,
+      },
     });
 
-    const { error } = schema.validate(req.body);
+  try {
+    //time bcrypt
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-    if (error)
-        return res.status(400).send({
-            error: {
-                message: error.details[0].message,
-            },
-        });
+    //validate user exits
+    const userExist = await user.findOne({
+      where: {
+        email: req.body.email,
+      },
+    });
 
-    try {
-        //time bcrypt
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    if (!userExist) {
+      const newUser = await user.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        role: "siswa",
+      });
 
-        //validate user exits
-        const userExist = await user.findOne({
-            where: {
-                email: req.body.email,
-            },
-        });
-
-        if (!userExist) {
-            const newUser = await user.create({
-                fullname: req.body.fullname,
-                email: req.body.email,
-                password: hashedPassword,
-                role: req.body.role
-            });
-
-            const token = jwt.sign({ email: newUser.email }, process.env.SECRET_KEY);
-            res.status(201).send({
-                status: "success",
-                message: "Register Succeess",
-                data: {
-                    user: {
-                        id: newUser.id,
-                        fullname: newUser.fullname,
-                        role: newUser.role,
-                        token,
-                    },
-                },
-            });
-        } else {
-            return res.status(400).send({
-                status: "failed",
-                message: "User already exists",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            status: "failed",
-            message: "Server Error",
-        });
+      const token = jwt.sign({ email: newUser.email }, process.env.SECRET_KEY);
+      res.status(201).send({
+        status: "success",
+        message: "Register Succeess",
+        data: {
+          user: {
+            id: newUser.id,
+            usernmae: newUser.username,
+            role: newUser.role,
+            token,
+          },
+        },
+      });
+    } else {
+      return res.status(400).send({
+        status: "failed",
+        message: "User already exists",
+      });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server Error",
+    });
+  }
 };
 exports.login = async (req, res) => {
-    const schema = Joi.object({
-        email: Joi.string().email().min(5).required(),
-        password: Joi.string().min(6).required(),
+  const schema = Joi.object({
+    email: Joi.string().email().min(5).required(),
+    password: Joi.string().min(6).required(),
+  });
+
+  const { error } = schema.validate(req.body);
+
+  if (error)
+    res.status(400).send({
+      error: {
+        message: error.details[0].message,
+      },
     });
 
-    const { error } = schema.validate(req.body);
+  try {
+    const userExist = await user.findOne({
+      where: {
+        email: req.body.email,
+      },
+      attributes: {
+        exclude: ["createdAt", "updateAt"],
+      },
+    });
 
-    if (error)
-        res.status(400).send({
-            error: {
-                message: error.details[0].message,
-            },
-        });
-
-    try {
-        const userExist = await user.findOne({
-            where: {
-                email: req.body.email,
-            },
-            attributes: {
-                exclude: ["createdAt", "updateAt"],
-            },
-        });
-
-        if (!userExist) {
-            return res.status(400).send({
-                status: "failed",
-                message: "unregistered account",
-            });
-        }
-
-        const isValid = await bcrypt.compare(req.body.password, userExist.password);
-
-        if (!isValid) {
-            return res.status(400).send({
-                status: "failed",
-                message: "password invalid",
-            });
-        }
-
-        const token = jwt.sign({ id: userExist.id }, process.env.SECRET_KEY);
-
-        res.status(200).send({
-            status: "success",
-            message: "Login Success",
-            data: {
-                user: {
-                    id: userExist.id,
-                    fullname: userExist.fullname,
-                    role: userExist.role,
-                    // email: userExist.email,
-                    image: userExist.image,
-                    token,
-                },
-            },
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            status: "failed",
-            message: "Server Error",
-        });
+    if (!userExist) {
+      return res.status(400).send({
+        status: "failed",
+        message: "unregistered account",
+      });
     }
+
+    const isValid = await bcrypt.compare(req.body.password, userExist.password);
+
+    if (!isValid) {
+      return res.status(400).send({
+        status: "failed",
+        message: "password invalid",
+      });
+    }
+
+    const token = jwt.sign({ id: userExist.id }, process.env.SECRET_KEY);
+
+    res.status(200).send({
+      status: "success",
+      message: "Login Success",
+      data: {
+        user: {
+          id: userExist.id,
+          username: userExist.username,
+          role: userExist.role,
+          email: userExist.email,
+          image: userExist.image,
+          token,
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server Error",
+    });
+  }
 };
 
 exports.checkAuth = async (req, res) => {
-    try {
-        const id = req.user.id;
-        console.log(id);
+  try {
+    const id = req.user.id;
+    console.log(id);
 
-        const dataUser = await user.findOne({
-            where: {
-                id,
-            },
-            attributes: {
-                exclude: ["createdAt", "updatedAt", "password"],
-            },
-        });
+    const dataUser = await user.findOne({
+      where: {
+        id,
+      },
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "password"],
+      },
+    });
 
-        if (!dataUser) {
-        	return res.status(404).send({
-        		status: "failed",
-        	});
-        }
-
-        console.log(dataUser);
-
-        res.send({
-            status: "success...",
-            data: {
-                user: {
-                    id: dataUser.id,
-                    fullname: dataUser.fullname,
-                    role: dataUser.role,
-
-                    // email: dataUser.email,
-                    image: dataUser.image,
-                },
-            },
-        });
-    } catch (error) {
-        //   console.log(error);
-        res.status(500).send({
-            status: "failed",
-            message: "Server Error",
-        });
+    if (!dataUser) {
+      return res.status(404).send({
+        status: "failed",
+      });
     }
+
+    console.log(dataUser);
+
+    res.send({
+      status: "success...",
+      data: {
+        user: {
+          id: dataUser.id,
+          username: dataUser.username,
+          role: dataUser.role,
+
+          // email: dataUser.email,
+          image: dataUser.image,
+        },
+      },
+    });
+  } catch (error) {
+    //   console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server Error",
+    });
+  }
 };
