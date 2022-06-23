@@ -24,8 +24,8 @@ exports.getAllRegistrasi = async (req, res) => {
 
 exports.getRegistrasi = async (req, res) => {
     try {
-        const { page, perPage } = req.query
-        const data = await paging(tb_registrasi, page, perPage)
+        const { page, perPage, search } = req.query
+        const data = await paging(tb_registrasi, page, perPage, search)
         res.status(200).send({
             status: "success get data",
             data,
