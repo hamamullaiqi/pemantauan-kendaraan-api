@@ -73,7 +73,7 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   const schema = Joi.object({
-    email: Joi.string().email().min(5).required(),
+    username: Joi.string().required(),
     password: Joi.string().min(6).required(),
   });
 
@@ -89,7 +89,7 @@ exports.login = async (req, res) => {
   try {
     const userExist = await user.findOne({
       where: {
-        email: req.body.email,
+        username: req.body.username,
       },
       attributes: {
         exclude: ["createdAt", "updateAt"],
