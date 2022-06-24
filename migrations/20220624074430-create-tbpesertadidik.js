@@ -8,8 +8,19 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      id_user: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+        },
+      },
       id_registrasi: {
         type: Sequelize.INTEGER,
+        references: {
+          model: "tb_registrasis",
+          key: "id",
+        },
       },
       nama_lengkap: {
         type: Sequelize.STRING,

@@ -1,40 +1,51 @@
-'use strict';
+"use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('tb_pembayarans', {
+    await queryInterface.createTable("tb_pembayarans", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+      },
+      id_user: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+        },
       },
       id_registrasi: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
+        references: {
+          model: "tb_registrasis",
+          key: "id",
+        },
       },
       nama_lengkap: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       tanggal_pembayaran: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       bukti_pembayaran: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       status_pembayaran: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('tb_pembayarans');
-  }
+    await queryInterface.dropTable("tb_pembayarans");
+  },
 };

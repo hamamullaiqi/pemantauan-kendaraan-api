@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class tb_pembayaran extends Model {
     /**
@@ -11,20 +9,36 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      tb_pembayaran.belongsTo(models.user, {
+        as: "user",
+        foreignKey: {
+          name: "id_user",
+        },
+      });
+      tb_pembayaran.hasOne(models.tb_registrasi, {
+        as: "registrasis",
+        foreignKey: {
+          name: "id_registrasi",
+        },
+      });
     }
   }
-  tb_pembayaran.init({
-    id_registrasi: DataTypes.STRING,
-    nama_lengkap: DataTypes.STRING,
-    tanggal_pembayaran: DataTypes.DATE,
-    bukti_pembayaran: DataTypes.STRING,
-    status_pembayaran:{
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    } 
-  }, {
-    sequelize,
-    modelName: 'tb_pembayaran',
-  });
+  tb_pembayaran.init(
+    {
+      id_user: DataTypes.INTEGER,
+      id_registrasi: DataTypes.INTEGER,
+      nama_lengkap: DataTypes.STRING,
+      tanggal_pembayaran: DataTypes.DATE,
+      bukti_pembayaran: DataTypes.STRING,
+      status_pembayaran: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+    },
+    {
+      sequelize,
+      modelName: "tb_pembayaran",
+    }
+  );
   return tb_pembayaran;
 };
