@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class tb_registrasi extends Model {
     /**
@@ -13,22 +11,25 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  tb_registrasi.init({
-    tgl_registrasi: DataTypes.DATE,
-    nama_lengkap: DataTypes.STRING,
-    jenis_kelamin:{
-      type: DataTypes.ENUM,
-      values: ["laki-laki", "perempuan"],
-      defaultValue: "laki-laki"
+  tb_registrasi.init(
+    {
+      tgl_registrasi: DataTypes.DATE,
+      nama_lengkap: DataTypes.STRING,
+      jenis_kelamin: {
+        type: DataTypes.ENUM,
+        values: ["laki-laki", "perempuan"],
+        defaultValue: "laki-laki",
+      },
+      tempat_lahir: DataTypes.STRING,
+      tanggal_lahir: DataTypes.DATE,
+      agama: DataTypes.STRING,
+      alamat: DataTypes.TEXT,
+      nomer_hp: DataTypes.STRING,
     },
-    tempat_lahir: DataTypes.STRING,
-    tanggal_lahir: DataTypes.DATE,
-    agama: DataTypes.STRING,
-    alamat: DataTypes.TEXT,
-    nomer_hp: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'tb_registrasi',
-  });
+    {
+      sequelize,
+      modelName: "tb_registrasi",
+    }
+  );
   return tb_registrasi;
 };

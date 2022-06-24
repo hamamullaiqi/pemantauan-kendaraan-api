@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("tb_pembayarans", {
+    await queryInterface.createTable("tbpesertadidiks", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -25,15 +25,25 @@ module.exports = {
       nama_lengkap: {
         type: Sequelize.STRING,
       },
-      tanggal_pembayaran: {
+      jenis_kelamin: {
+        type: Sequelize.ENUM,
+        values: ["laki-laki", "perempuan"],
+        defaultValue: "laki-laki",
+      },
+      tempat_lahir: {
+        type: Sequelize.CHAR,
+      },
+      tanggal_lahir: {
         type: Sequelize.DATE,
       },
-      bukti_pembayaran: {
-        type: Sequelize.STRING,
+      agama: {
+        type: Sequelize.CHAR,
       },
-      status_pembayaran: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      alamat: {
+        type: Sequelize.TEXT,
+      },
+      no_hp: {
+        type: Sequelize.CHAR,
       },
       createdAt: {
         allowNull: false,
@@ -46,6 +56,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("tb_pembayarans");
+    await queryInterface.dropTable("tbpesertadidiks");
   },
 };

@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class tb_pembayaran extends Model {
+  class tbpesertadidik extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,36 +9,34 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      tb_pembayaran.belongsTo(models.user, {
+      tbpesertadidik.hasOne(models.user, {
         as: "user",
         foreignKey: {
           name: "id_user",
         },
       });
-      tb_pembayaran.hasOne(models.tb_registrasi, {
-        as: "registrasis",
-        foreignKey: {
-          name: "id_registrasi",
-        },
-      });
+      // tbpesertadidik.belongsTo(models.tb_registrasi, {
+      //   as: "registrasi",
+      //   foreignKey: {
+      //     name: "id_registrasi",
+      //   },
+      // });
     }
   }
-  tb_pembayaran.init(
+  tbpesertadidik.init(
     {
       id_user: DataTypes.INTEGER,
       id_registrasi: DataTypes.INTEGER,
       nama_lengkap: DataTypes.STRING,
-      tanggal_pembayaran: DataTypes.DATE,
-      bukti_pembayaran: DataTypes.STRING,
-      status_pembayaran: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
+      tanggal_lahir: DataTypes.DATE,
+      agama: DataTypes.CHAR,
+      alamat: DataTypes.TEXT,
+      no_hp: DataTypes.CHAR,
     },
     {
       sequelize,
-      modelName: "tb_pembayaran",
+      modelName: "tbpesertadidik",
     }
   );
-  return tb_pembayaran;
+  return tbpesertadidik;
 };
