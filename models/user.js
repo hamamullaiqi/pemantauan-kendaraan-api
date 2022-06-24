@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       role: {
         type: DataTypes.STRING,
-        defaultValue: "siswa"
-      }
+        defaultValue: "siswa",
+      },
     },
     {
       sequelize,
