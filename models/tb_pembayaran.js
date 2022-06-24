@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_user",
         },
       });
-      tb_pembayaran.hasOne(models.tb_registrasi, {
-        as: "registrasis",
+      tb_pembayaran.belongsTo(models.tb_registrasi, {
+        as: "registrasi",
         foreignKey: {
           name: "id_registrasi",
         },

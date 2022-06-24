@@ -9,18 +9,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      tbpesertadidik.hasOne(models.user, {
+      tbpesertadidik.belongsTo(models.user, {
         as: "user",
         foreignKey: {
           name: "id_user",
         },
       });
-      // tbpesertadidik.belongsTo(models.tb_registrasi, {
-      //   as: "registrasi",
-      //   foreignKey: {
-      //     name: "id_registrasi",
-      //   },
-      // });
+      tbpesertadidik.belongsTo(models.tb_registrasi, {
+        as: "registrasi",
+        foreignKey: {
+          name: "id_registrasi",
+        },
+      });
     }
   }
   tbpesertadidik.init(
