@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       tb_pembayaran.belongsTo(models.user, {
         as: "user",
         foreignKey: {
-          name: "id_user",
+          name: "id",
         },
       });
       tb_pembayaran.hasOne(models.tb_registrasi, {

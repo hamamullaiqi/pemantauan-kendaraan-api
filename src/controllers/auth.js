@@ -31,7 +31,7 @@ exports.register = async (req, res) => {
     //validate user exits
     const userExist = await user.findOne({
       where: {
-        email: req.body.email,
+        username: req.body.username,
       },
     });
 
@@ -151,13 +151,13 @@ exports.checkAuth = async (req, res) => {
       },
     });
 
+  
+
     if (!dataUser) {
       return res.status(404).send({
         status: "failed",
       });
     }
-
-    console.log(dataUser);
 
     res.send({
       status: "success...",
@@ -173,7 +173,7 @@ exports.checkAuth = async (req, res) => {
       },
     });
   } catch (error) {
-    //   console.log(error);
+      console.log(error.message);
     res.status(500).send({
       status: "failed",
       message: "Server Error",
