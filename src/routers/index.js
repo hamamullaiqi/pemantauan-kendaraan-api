@@ -1,11 +1,11 @@
 const express = require("express");
 const { register, login, checkAuth } = require("../controllers/auth");
-const { AddPembayaran } = require("../controllers/pembayaran");
 const {
   getAllRegistrasi,
   getRegistrasi,
   addRegistrasi,
 } = require("../controllers/registrasi");
+const { getUserById } = require("../controllers/user");
 const { auth } = require("../middlewares/checkAuth");
 const { uploadFile } = require("../middlewares/uploadFile");
 const router = express.Router();
@@ -29,5 +29,8 @@ router.post(
 router.get("/registrasi/all", getAllRegistrasi);
 router.get("/registrasi", getRegistrasi);
 router.post("/registrasi/add", addRegistrasi);
+
+//user
+router.get("/user/:id", checkAuth, getUserById);
 
 module.exports = router;

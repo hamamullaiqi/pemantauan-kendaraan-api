@@ -9,6 +9,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      user.hasOne(models.tbpesertadidik, {
+        as: "tbpesertadidik",
+        foreignKey: {
+          name: "id",
+        },
+      });
+      user.hasOne(models.tb_pembayaran, {
+        as: "tb_pembayaran",
+        foreignKey: {
+          name: "id",
+        },
+      });
     }
   }
   user.init(

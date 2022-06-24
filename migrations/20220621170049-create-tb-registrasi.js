@@ -34,6 +34,9 @@ module.exports = {
       nomer_hp: {
         type: Sequelize.STRING
       },
+      createBy: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

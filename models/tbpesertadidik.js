@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       tbpesertadidik.belongsTo(models.user, {
         as: "user",
         foreignKey: {
-          name: "id_user",
+          name: "id",
         },
       });
       tbpesertadidik.belongsTo(models.tb_registrasi, {
