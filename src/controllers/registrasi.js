@@ -49,7 +49,7 @@ exports.addRegistrasi = async (req, res) => {
         const newData = { nama_lengkap, jenis_kelamin, tempat_lahir, tanggal_lahir, agama, alamat, nomer_hp, createBy } = req.body
         const data = await tb_registrasi.create({ tgl_registrasi, ...newData })
 
-        const userCreate = await user.findOne({ where: { id : data.id } })
+        const userCreate = await user.findOne({ where: { id : data.createBy } })
 
         if (userCreate.role === "admin") {
             const splitName = nama_lengkap.split(" ")
