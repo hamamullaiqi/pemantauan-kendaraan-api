@@ -151,8 +151,6 @@ exports.checkAuth = async (req, res) => {
       },
     });
 
-  
-
     if (!dataUser) {
       return res.status(404).send({
         status: "failed",
@@ -173,7 +171,7 @@ exports.checkAuth = async (req, res) => {
       },
     });
   } catch (error) {
-      console.log(error.message);
+    console.log(error.message);
     res.status(500).send({
       status: "failed",
       message: "Server Error",
