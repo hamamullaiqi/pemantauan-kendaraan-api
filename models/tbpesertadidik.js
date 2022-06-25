@@ -15,12 +15,12 @@ module.exports = (sequelize, DataTypes) => {
           name: "id",
         },
       });
-      // tbpesertadidik.belongsTo(models.tb_registrasi, {
-      //   as: "registrasi",
-      //   foreignKey: {
-      //     name: "id_registrasi",
-      //   },
-      // });
+      tbpesertadidik.belongsTo(models.tb_registrasi, {
+        as: "registrasi",
+        foreignKey: {
+          name: "id_registrasi",
+        },
+      });
     }
   }
   tbpesertadidik.init(

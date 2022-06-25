@@ -34,7 +34,7 @@ exports.getPembayaran = async (req, res) => {
                     include: [{
                         model: tb_registrasi,
                         as: "registrasi",
-                        where: { nama_lengkap : { [Op.like]: `%${search}%` } }
+                        where: { nama_lengkap: { [Op.like]: `%${search}%` } }
                     }]
                 }
             } else {
@@ -72,5 +72,26 @@ exports.getPembayaran = async (req, res) => {
         });
     }
 
+}
+
+exports.updatePembayaran = async (req, res) => {
+    try {
+        const { id } = req.params
+        const tanggal_pembayaran = new Date()
+        const updateData = { nama_lengkap } = req.body
+        const bukti_pembayaran = req.file.filename
+
+        const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id } })
+        res.send({
+            status: "success",
+            data: { data },
+        });
+    } catch (error) {
+        console.log(error);
+        res.send({
+            status: "failed",
+            message: "Server Error",
+        });
+    }
 }
 
