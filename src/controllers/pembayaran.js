@@ -2,6 +2,8 @@ const { Op } = require("sequelize")
 const { tb_pembayaran } = require("../../models")
 const { tb_registrasi } = require("../../models")
 const { paging } = require("./utils")
+const path = require("path")
+const fs = require("fs")
 
 exports.addPembayaran = async (req, res) => {
     try {
@@ -94,4 +96,52 @@ exports.updatePembayaran = async (req, res) => {
         });
     }
 }
+
+exports.acceptPembayaran = async (req, res) => {
+    try {
+        const { id } = req.params
+        const tanggal_pembayaran = new Date()
+
+        const data = await tb_pembayaran.update({ tanggal_pembayaran, status_pembayaran: 1 }, { where: { id } })
+        res.send({
+            status: "success",
+            data: { data },
+        });
+    } catch (error) {
+        console.log(error);
+        res.send({
+            status: "failed",
+            message: "Server Error",
+        });
+    }
+}
+
+exports.deletePembayaran = async (req, res) => {
+    try {
+        const { id } = req.params
+        const findData = await tb_pembayaran.findOne({where:{id}})
+
+        if (findData.bukti_pembayaran !== null) {
+            const deleteFIle = (filePath) => {
+                //menggabungkan direktori controller , uploads dan nama file Product
+                filePath = path.join(__dirname, "../../uploads", filePath)
+                fs.unlink(filePath, (err) => console.log(err))
+            }
+            deleteFIle(findData.bukti_pembayaran)
+        }
+        const dataPembayaran = await tb_pembayaran.destroy({ where: { id } })
+        // const data = await tb_registrasi.destroy({ where: { id } })
+        res.send({
+            status: "success",
+            message: `Success Delete data id: ${id}`
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            status: "failed",
+            message: "Server Error",
+        });
+    }
+}
+
 

@@ -96,6 +96,12 @@ exports.addRegistrasi = async (req, res) => {
                 role: "siswa",
             });
         }
+
+        res.status(201).send({
+            status: "success",
+            message: "Registrasi success",
+            
+        })
     }catch (error) {
         console.log(error)
         res.status(500).send({
