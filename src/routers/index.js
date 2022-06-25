@@ -31,9 +31,9 @@ router.delete("/registrasi/:id", deleteRegistrasi)
 router.patch("/registrasi/:id", updateRegistrasi)
 
 //user
-router.get("/user/:id", auth, getUserById);
-router.get("/data-users/all", auth, getUsers);
-router.patch("/edit-user/:id", uploadFile("image"), auth, updateUser);
+router.get("/user/:id", getUserById);
+router.get("/data-users/all", getUsers);
+router.patch("/edit-user/:id", uploadFile("image"), updateUser);
 
 //pembayaran 
 router.post("/pembayaran", uploadFile("bukti_pembayaran"), addPembayaran)

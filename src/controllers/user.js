@@ -5,14 +5,21 @@ const fs = require("fs");
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await user.findOne({
-      where: { id },
+    let datauser = await user.findOne({
+      where: { id: id },
     });
+
+    datauser = JSON.parse(JSON.stringify(datauser));
+
+    // datauser = {
+    //   ...datauser,
+    //   image: process.env.FILE_PATH + datauser.image,
+    // };
 
     res.status(200).send({
       status: "succes",
-      message: "success get data by ID",
-      data: { data },
+      message: "success get datauser by ID",
+      data: { datauser },
     });
   } catch (error) {
     console.log(error);
