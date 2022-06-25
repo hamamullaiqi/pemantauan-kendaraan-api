@@ -9,6 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      tb_registrasi.hasOne(models.tb_pembayaran, {
+        as: "tb_pembayaran",
+        foreignKey: {
+          name: "id_registrasi",
+        },
+      });
     }
   }
   tb_registrasi.init(
