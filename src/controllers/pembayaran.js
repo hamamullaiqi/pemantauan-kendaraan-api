@@ -83,7 +83,7 @@ exports.updatePembayaran = async (req, res) => {
         const updateData = { nama_lengkap } = req.body
         const bukti_pembayaran = req.file.filename
 
-        const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id } })
+        const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id_user: id } })
         res.send({
             status: "success",
             data: { data },
