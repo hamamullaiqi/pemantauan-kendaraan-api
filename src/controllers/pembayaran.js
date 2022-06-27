@@ -50,6 +50,7 @@ exports.getPembayaran = async (req, res) => {
             return result
         }
         let data = await paging(tb_pembayaran, page, perPage, filter(search))
+        const total = data.total
 
         data = JSON.parse(JSON.stringify(data))
         data = data.data.map(item => {
@@ -64,7 +65,7 @@ exports.getPembayaran = async (req, res) => {
         res.status(200).send({
             status: "success",
             message: "success get All",
-            data: { data }
+            data: { data, total }
         })
     } catch (error) {
         console.log(error);
