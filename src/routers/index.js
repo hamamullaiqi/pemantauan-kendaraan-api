@@ -2,7 +2,7 @@ const express = require("express");
 const { register, login, checkAuth } = require("../controllers/auth");
 const { addPembayaran, getPembayaran, updatePembayaran, acceptPembayaran, deletePembayaran, getPembayaranById } = require("../controllers/pembayaran");
 const { getAllRegistrasi, getRegistrasi, addRegistrasi, deleteRegistrasi, getRegistrasiById, updateRegistrasi } = require("../controllers/registrasi");
-const { getUserById, getUsers, updateUser, getUsersAll } = require("../controllers/user");
+const { getUserById, getUsers, updateUser, getUsersAll, addUser, deleteUser } = require("../controllers/user");
 const { auth } = require("../middlewares/checkAuth");
 const { uploadFile } = require("../middlewares/uploadImage");
 const router = express.Router();
@@ -34,6 +34,8 @@ router.patch("/registrasi/:id", updateRegistrasi)
 router.get("/user/:id", getUserById);
 router.get("/data-users/all", getUsers);
 router.get("/users", getUsersAll);
+router.post("/user/add", addUser);
+router.delete("/user/:id", deleteUser);
 router.patch("/edit-user/:id", uploadFile("image"), updateUser);
 
 //pembayaran 
