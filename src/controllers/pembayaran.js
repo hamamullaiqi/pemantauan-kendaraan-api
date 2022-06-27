@@ -76,6 +76,35 @@ exports.getPembayaran = async (req, res) => {
 
 }
 
+exports.getPembayaranById = async (req, res) => {
+    try {
+        const { id } = req.params
+        let data = await tb_pembayaran.findOne({where: {id_user: id}})
+
+        data = JSON.parse(JSON.stringify(data))
+        // data =  {
+        //         ...data,
+        //         bukti_pembayaran: process.env.FILE_PATH + data.bukti_pembayaran
+        //     }
+
+        // data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
+
+
+        res.status(200).send({
+            status: "success",
+            message: "success get All",
+            data: { data }
+        })
+    } catch (error) {
+        console.log(error);
+        res.send({
+            status: "failed",
+            message: "Server Error",
+        });
+    }
+
+}
+
 exports.updatePembayaran = async (req, res) => {
     try {
         const { id } = req.params

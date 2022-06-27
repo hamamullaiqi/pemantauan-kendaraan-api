@@ -1,20 +1,25 @@
 const { user } = require("../../models");
 const path = require("path");
 const fs = require("fs");
+const { paging } = require("./utils");
+const { Op } = require("sequelize");
 
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     let datauser = await user.findOne({
-      where: { id: id },
+      where: { id },
+      attributes : {
+        exclude: ["password"]
+      }
     });
 
     datauser = JSON.parse(JSON.stringify(datauser));
 
-    // datauser = {
-    //   ...datauser,
-    //   image: process.env.FILE_PATH + datauser.image,
-    // };
+    datauser = {
+      ...datauser,
+      image: process.env.FILE_PATH + datauser.image,
+    };
 
     res.status(200).send({
       status: "succes",
@@ -40,6 +45,31 @@ exports.getUsers = async (req, res) => {
     res.status(200).send({
       status: "Success get all data Users",
       data: { users },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      status: "Error Failed get users",
+      message: "Undifend server error",
+    });
+  }
+};
+
+exports.getUsersAll = async (req, res) => {
+  try {
+    const { page, perPage, search } = req.query
+    const filter = (search) => {
+      let result = ""
+      if (search !== undefined) {
+        result = { where: { username: { [Op.like]: `%${search}%` } } }
+      }
+      return result
+    }
+    const data = await paging(user, page, perPage, filter(search))
+
+    res.status(200).send({
+      status: "Success get all data Users",
+      data,
     });
   } catch (error) {
     console.log(error);
@@ -94,24 +124,26 @@ exports.updateUser = async (req, res) => {
 
     console.log(id);
 
-    let updateAvatarProfile = await user.update(dataUpdate, {
+    let data = await user.update(dataUpdate, {
       where: {
         id,
       },
       ...dataUpdate,
     });
 
-    updateAvatarProfile = JSON.parse(JSON.stringify(updateAvatarProfile));
+    data = JSON.parse(JSON.stringify(data));
+    console.log(data);
 
-    updateAvatarProfile = {
-      image: process.env.FILE_PATH + dataUpdate.image,
+    data = {
+      ...data,
+      image: process.env.FILE_PATH + data.image,
     };
 
     res.status(200).send({
       status: "Success update all data Users",
       data: {
-        updateAvatarProfile,
-        dataUpdate,
+        data,
+        // dataUpdate,
       },
     });
   } catch (error) {

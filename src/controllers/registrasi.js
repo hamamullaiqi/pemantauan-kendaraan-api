@@ -25,7 +25,7 @@ exports.getAllRegistrasi = async (req, res) => {
 exports.getRegistrasiById = async (req, res) => {
     try {
         const { id } = req.params
-        const data = await tb_registrasi.findOne({ where: { id } })
+        const data = await tb_registrasi.findOne({ where: { id_user: id } })
         res.status(200).send({
             status: "succes",
             message: `success get data by ${id}`,
