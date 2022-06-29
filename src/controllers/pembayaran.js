@@ -1,6 +1,6 @@
 const { Op } = require("sequelize")
 const { tb_pembayaran } = require("../../models")
-const { tb_registrasi } = require("../../models")
+const { tb_registrasi, user } = require("../../models")
 const { paging } = require("./utils")
 const path = require("path")
 const fs = require("fs")
@@ -113,7 +113,14 @@ exports.updatePembayaran = async (req, res) => {
         const updateData = { nama_lengkap } = req.body
         const bukti_pembayaran = req.file.filename
 
-        const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id_user: id } })
+        const userData = await user.findOne({where: {id}})
+        
+        if(userData?.role !== "siswa") {
+            const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id } })
+        } else {
+            const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id_user : id } })
+        }
+
         res.send({
             status: "success",
             data: { data },
