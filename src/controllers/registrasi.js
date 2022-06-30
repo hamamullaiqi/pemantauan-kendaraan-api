@@ -64,7 +64,6 @@ exports.getRegistrasi = async (req, res) => {
 };
 
 exports.addRegistrasi = async (req, res) => {
-<<<<<<< HEAD
   try {
     let tgl_registrasi = new Date();
     const newData = ({
@@ -78,16 +77,6 @@ exports.addRegistrasi = async (req, res) => {
       createBy,
     } = req.body);
     const data = await tb_registrasi.create({ tgl_registrasi, ...newData });
-    const tagihanPembayaran = await tb_pembayaran.create({
-      id_user: createBy,
-      id_registrasi: data.id,
-    });
-=======
-    try {
-        let tgl_registrasi = new Date()
-        const newData = { nama_lengkap, jenis_kelamin, tempat_lahir, tanggal_lahir, agama, alamat, nomer_hp, createBy } = req.body
-        const data = await tb_registrasi.create({ tgl_registrasi, ...newData })
->>>>>>> c873568b0f2673fdc9e444464347284978a14e20
 
     const userCreate = await user.findOne({ where: { id: data.createBy } });
 
@@ -102,7 +91,6 @@ exports.addRegistrasi = async (req, res) => {
         salt
       );
 
-<<<<<<< HEAD
       const newUser = await user.create({
         username:
           splitName.length === 1
@@ -111,38 +99,15 @@ exports.addRegistrasi = async (req, res) => {
         password: hashedPassword,
         role: "siswa",
       });
-=======
-            const newUser = await user.create({
-                username:
-                    splitName.length === 1
-                        ? `${splitName[0]}${splitPass[0]}`.toLowerCase()
-                        : `${splitName[0]}${splitName[1]}${splitPass[0]}`.toLowerCase(),
-                password: hashedPassword,
-                role: "siswa",
-            });
 
-            await tb_pembayaran.create({ id_user: newUser.id, id_registrasi: data.id })
-        } else {
-            await tb_pembayaran.create({ id_user: createBy, id_registrasi: data.id })
-        }
-
-
-        
-        res.status(201).send({
-            status: "success",
-            message: "Registrasi success",
-
-        })
-    } catch (error) {
-        console.log(error)
-        res.status(500).send({
-            status: "failed",
-            message: "Server Error",
-        });
->>>>>>> c873568b0f2673fdc9e444464347284978a14e20
+      await tb_pembayaran.create({
+        id_user: newUser.id,
+        id_registrasi: data.id,
+      });
+    } else {
+      await tb_pembayaran.create({ id_user: createBy, id_registrasi: data.id });
     }
 
-<<<<<<< HEAD
     res.status(201).send({
       status: "success",
       message: "Registrasi success",
@@ -205,45 +170,3 @@ exports.updateRegistrasi = async (req, res) => {
     });
   }
 };
-=======
-
-
-exports.deleteRegistrasi = async (req, res) => {
-    try {
-        const { id } = req.params
-        const dataPembayaran = await tb_pembayaran.destroy({ where: { id_registrasi: id } })
-        const data = await tb_registrasi.destroy({ where: { id } })
-        res.send({
-            status: "success",
-            message: `Success Delete data id: ${id}`
-        })
-    } catch (error) {
-        console.log(error)
-        res.status(500).send({
-            status: "failed",
-            message: "Server Error",
-        });
-    }
-}
-
-exports.updateRegistrasi = async (req, res) => {
-    try {
-        const { id } = req.params
-        console.log(id);
-        const updateData = { nama_lengkap, jenis_kelamin, tempat_lahir, tanggal_lahir, agama, alamat, nomer_hp, createBy } = req.body
-        const data = await tb_registrasi.update(updateData, { where: { id } })
-
-        res.status(201).send({
-            status: "success",
-            message: "success Update",
-            data: { data }
-        })
-    } catch (error) {
-        console.log(error)
-        res.status(500).send({
-            status: "failed",
-            message: "Server Error",
-        });
-    }
-}
->>>>>>> c873568b0f2673fdc9e444464347284978a14e20
