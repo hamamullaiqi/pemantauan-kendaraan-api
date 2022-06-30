@@ -153,14 +153,22 @@ exports.acceptPembayaran = async (req, res) => {
       { where: { id } }
     );
 
+    const getDataPembayaran = await tb_pembayaran.findOne({where: {id}})
+
     const dataRegistrasi = await tb_registrasi.findOne({
-      where: { id: dataPembayaran.id_registrasi },
+      where: { id: getDataPembayaran.id_registrasi },
     });
 
+    
     const dataAddPesertaDidik = await tb_pesertadidik.create({
-      id_user: dataPembayaran.id_user,
-      id_registrasi: dataPembayaran.id_registrasi,
-      ...dataRegistrasi,
+      id_user: getDataPembayaran.id_user,
+      id_registrasi: getDataPembayaran.id_registrasi,
+      nama_lengkap: dataRegistrasi.nama_lengkap,
+      jenis_kelamin: dataRegistrasi.jenis_kelamin,
+      tempat_lahir: dataRegistrasi.tempat_lahir,
+      agama : dataRegistrasi.agama,
+      alamat: dataRegistrasi.alamat,
+      no_hp: dataRegistrasi.no_hp
     });
 
     console.log(dataAddPesertaDidik);
