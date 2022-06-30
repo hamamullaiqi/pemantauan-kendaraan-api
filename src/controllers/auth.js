@@ -164,8 +164,7 @@ exports.checkAuth = async (req, res) => {
           id: dataUser.id,
           username: dataUser.username,
           role: dataUser.role,
-
-          // email: dataUser.email,
+          email: dataUser.email,
           image: dataUser.image,
         },
       },

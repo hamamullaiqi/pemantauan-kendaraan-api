@@ -1,20 +1,28 @@
 const { user } = require("../../models");
 const path = require("path");
 const fs = require("fs");
+const { paging } = require("./utils");
+const { Op } = require("sequelize");
+const Joi = require("joi");
+const bcrypt = require("bcrypt");
+
 
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     let datauser = await user.findOne({
-      where: { id: id },
+      where: { id },
+      attributes: {
+        exclude: ["password"]
+      }
     });
 
     datauser = JSON.parse(JSON.stringify(datauser));
 
-    // datauser = {
-    //   ...datauser,
-    //   image: process.env.FILE_PATH + datauser.image,
-    // };
+    datauser = {
+      ...datauser,
+      image: process.env.FILE_PATH + datauser.image,
+    };
 
     res.status(200).send({
       status: "succes",
@@ -50,21 +58,68 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-// exports.addUser = async (req, res) => {
-//   try {
-//     await user.create(req.body);
-//     res.status(200).send({
-//       status: "Succes add user",
-//       message: "Data has been created",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).send({
-//       status: "Error",
-//       message: "Data not created because server Error",
-//     });
-//   }
-// };
+exports.getUsersAll = async (req, res) => {
+  try {
+    const { page, perPage, search } = req.query
+    const filter = (search) => {
+      let result = ""
+      if (search !== undefined) {
+        result = { where: { username: { [Op.like]: `%${search}%` } } }
+      }
+      return result
+    }
+    const data = await paging(user, page, perPage, filter(search))
+
+    res.status(200).send({
+      status: "Success get all data Users",
+      data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      status: "Error Failed get users",
+      message: "Undifend server error",
+    });
+  }
+};
+
+exports.addUser = async (req, res) => {
+  const schema = Joi.object({
+    username: Joi.string().min(5).required(),
+    email: Joi.string().email().min(5).required(),
+    password: Joi.string().min(6).required(),
+    role: Joi.string().required(),
+  });
+
+  const { error } = schema.validate(req.body);
+
+  if (error)
+    return res.status(400).send({
+      error: {
+        message: error.details[0].message,
+      },
+    });
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    const newData = { username, email, role } = req.body
+    const data = await user.create({ ...newData, password: hashedPassword });
+
+    res.status(201).send({
+      status: "Succes add user",
+      message: "Data has been created",
+      data: { data }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "Error",
+      message: "Data not created because server Error",
+    });
+  }
+};
 
 exports.updateUser = async (req, res) => {
   try {
@@ -94,31 +149,54 @@ exports.updateUser = async (req, res) => {
 
     console.log(id);
 
-    let updateAvatarProfile = await user.update(dataUpdate, {
+    let data = await user.update(dataUpdate, {
       where: {
         id,
       },
       ...dataUpdate,
     });
 
-    updateAvatarProfile = JSON.parse(JSON.stringify(updateAvatarProfile));
+    data = JSON.parse(JSON.stringify(data));
+    console.log(data);
 
-    updateAvatarProfile = {
-      image: process.env.FILE_PATH + dataUpdate.image,
+    data = {
+      ...data,
+      image: process.env.FILE_PATH + data.image,
     };
 
     res.status(200).send({
       status: "Success update all data Users",
       data: {
-        updateAvatarProfile,
-        dataUpdate,
+        data,
+        // dataUpdate,
       },
     });
   } catch (error) {
     console.log(error);
-    res.status(400).send({
+    res.status(500).send({
       status: "Error Failed update users",
       message: "Undifend server error",
     });
   }
 };
+
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const data = await user.destroy({ where: { id } })
+
+    res.status(200).send({
+      status: "success",
+      message: "success delete user",
+      data: {data}
+    })
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "Error",
+      message: "Data not created because server Error",
+    });
+  }
+}

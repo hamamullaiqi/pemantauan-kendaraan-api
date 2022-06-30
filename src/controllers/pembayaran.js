@@ -1,6 +1,6 @@
 const { Op } = require("sequelize")
 const { tb_pembayaran } = require("../../models")
-const { tb_registrasi } = require("../../models")
+const { tb_registrasi, user } = require("../../models")
 const { paging } = require("./utils")
 const path = require("path")
 const fs = require("fs")
@@ -50,6 +50,7 @@ exports.getPembayaran = async (req, res) => {
             return result
         }
         let data = await paging(tb_pembayaran, page, perPage, filter(search))
+        const total = data.total
 
         data = JSON.parse(JSON.stringify(data))
         data = data.data.map(item => {
@@ -58,6 +59,35 @@ exports.getPembayaran = async (req, res) => {
                 bukti_pembayaran: process.env.FILE_PATH + item.bukti_pembayaran
             }
         })
+        // data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
+
+
+        res.status(200).send({
+            status: "success",
+            message: "success get All",
+            data: { data, total }
+        })
+    } catch (error) {
+        console.log(error);
+        res.send({
+            status: "failed",
+            message: "Server Error",
+        });
+    }
+
+}
+
+exports.getPembayaranById = async (req, res) => {
+    try {
+        const { id } = req.params
+        let data = await tb_pembayaran.findOne({where: {id_user: id}})
+
+        data = JSON.parse(JSON.stringify(data))
+        // data =  {
+        //         ...data,
+        //         bukti_pembayaran: process.env.FILE_PATH + data.bukti_pembayaran
+        //     }
+
         // data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
 
 
@@ -83,7 +113,14 @@ exports.updatePembayaran = async (req, res) => {
         const updateData = { nama_lengkap } = req.body
         const bukti_pembayaran = req.file.filename
 
-        const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id_user: id } })
+        const userData = await user.findOne({where: {id}})
+        
+        if(userData?.role !== "siswa") {
+            const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id } })
+        } else {
+            const data = await tb_pembayaran.update({ tanggal_pembayaran, bukti_pembayaran, ...updateData }, { where: { id_user : id } })
+        }
+
         res.send({
             status: "success",
             data: { data },
