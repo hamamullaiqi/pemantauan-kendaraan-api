@@ -28,10 +28,16 @@ module.exports = (sequelize, DataTypes) => {
       id_user: DataTypes.INTEGER,
       id_registrasi: DataTypes.INTEGER,
       nama_lengkap: DataTypes.STRING,
+      jenis_kelamin: {
+        type: DataTypes.ENUM,
+        values: ["laki-laki", "perempuan"],
+        defaultValue: "laki-laki",
+      },
+      tempat_lahir: DataTypes.STRING,
       tanggal_lahir: DataTypes.DATE,
-      agama: DataTypes.CHAR,
+      agama: DataTypes.STRING,
       alamat: DataTypes.TEXT,
-      no_hp: DataTypes.CHAR,
+      nomer_hp: DataTypes.STRING,
     },
     {
       sequelize,

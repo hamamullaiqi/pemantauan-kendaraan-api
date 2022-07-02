@@ -88,12 +88,12 @@ exports.getPembayaranById = async (req, res) => {
     let data = await tb_pembayaran.findOne({ where: { id_user: id } });
 
     data = JSON.parse(JSON.stringify(data));
-    // data =  {
-    //         ...data,
-    //         bukti_pembayaran: process.env.FILE_PATH + data.bukti_pembayaran
-    //     }
+    data =  {
+            ...data,
+            bukti_pembayaran: process.env.FILE_PATH + data.bukti_pembayaran
+        }
 
-    // data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
+    data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
 
     res.status(200).send({
       status: "success",
@@ -131,8 +131,7 @@ exports.updatePembayaran = async (req, res) => {
     }
 
     res.send({
-      status: "success",
-      data: { data },
+      status: "success update",
     });
   } catch (error) {
     console.log(error);
@@ -159,6 +158,8 @@ exports.acceptPembayaran = async (req, res) => {
       where: { id: getDataPembayaran.id_registrasi },
     });
 
+    console.log(dataRegistrasi);
+
     
     const dataAddPesertaDidik = await tb_pesertadidik.create({
       id_user: getDataPembayaran.id_user,
@@ -166,9 +167,10 @@ exports.acceptPembayaran = async (req, res) => {
       nama_lengkap: dataRegistrasi.nama_lengkap,
       jenis_kelamin: dataRegistrasi.jenis_kelamin,
       tempat_lahir: dataRegistrasi.tempat_lahir,
+      tanggal_lahir: dataRegistrasi.tanggal_lahir,
       agama : dataRegistrasi.agama,
       alamat: dataRegistrasi.alamat,
-      no_hp: dataRegistrasi.no_hp
+      nomer_hp: dataRegistrasi.nomer_hp
     });
 
     console.log(dataAddPesertaDidik);

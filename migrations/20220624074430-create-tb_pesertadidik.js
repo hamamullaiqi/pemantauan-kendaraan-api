@@ -31,7 +31,7 @@ module.exports = {
         defaultValue: "laki-laki",
       },
       tempat_lahir: {
-        type: Sequelize.CHAR,
+        type: Sequelize.STRING,
       },
       tanggal_lahir: {
         type: Sequelize.DATE,
@@ -42,8 +42,8 @@ module.exports = {
       alamat: {
         type: Sequelize.TEXT,
       },
-      no_hp: {
-        type: Sequelize.CHAR,
+      nomer_hp: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
