@@ -17,12 +17,17 @@ exports.getUserById = async (req, res) => {
       }
     });
 
+
+    console.log(datauser.image);
+
+    if(datauser.image !== null) {
     datauser = JSON.parse(JSON.stringify(datauser));
 
-    datauser = {
-      ...datauser,
-      image: process.env.FILE_PATH + datauser.image,
-    };
+      datauser = {
+        ...datauser,
+        image: process.env.FILE_PATH + datauser.image,
+      };
+    }
 
     res.status(200).send({
       status: "succes",

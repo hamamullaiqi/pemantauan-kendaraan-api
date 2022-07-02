@@ -122,8 +122,8 @@ exports.login = async (req, res) => {
           id: userExist.id,
           username: userExist.username,
           role: userExist.role,
-          // email: userExist.email,
-          // image: userExist.image,
+          email: userExist.email,
+          image: userExist?.image,
           token,
         },
       },
@@ -151,6 +151,14 @@ exports.checkAuth = async (req, res) => {
       },
     });
 
+    // data = JSON.parse(JSON.stringify(data));
+    // console.log(data);
+
+    // data = {
+    //   ...data,
+    //   image: process.env.FILE_PATH + data.image,
+    // };
+
     if (!dataUser) {
       return res.status(404).send({
         status: "failed",
@@ -159,15 +167,7 @@ exports.checkAuth = async (req, res) => {
 
     res.send({
       status: "success...",
-      data: {
-        user: {
-          id: dataUser.id,
-          username: dataUser.username,
-          role: dataUser.role,
-          email: dataUser.email,
-          image: dataUser.image,
-        },
-      },
+      data: {dataUser}
     });
   } catch (error) {
     console.log(error.message);

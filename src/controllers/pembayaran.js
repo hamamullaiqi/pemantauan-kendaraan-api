@@ -87,13 +87,16 @@ exports.getPembayaranById = async (req, res) => {
     const { id } = req.params;
     let data = await tb_pembayaran.findOne({ where: { id_user: id } });
 
-    data = JSON.parse(JSON.stringify(data));
-    data =  {
-            ...data,
-            bukti_pembayaran: process.env.FILE_PATH + data.bukti_pembayaran
-        }
+    console.log(data);
+    if (data.bukti_pembayaran !== null) {
+      data = JSON.parse(JSON.stringify(data));
+      data = {
+        ...data,
+        bukti_pembayaran: process.env.FILE_PATH + data?.bukti_pembayaran
+      }
+    }
 
-    data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
+    // data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
 
     res.status(200).send({
       status: "success",
@@ -102,7 +105,7 @@ exports.getPembayaranById = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.send({
+    res.status(500).send({
       status: "failed",
       message: "Server Error",
     });
@@ -152,7 +155,7 @@ exports.acceptPembayaran = async (req, res) => {
       { where: { id } }
     );
 
-    const getDataPembayaran = await tb_pembayaran.findOne({where: {id}})
+    const getDataPembayaran = await tb_pembayaran.findOne({ where: { id } })
 
     const dataRegistrasi = await tb_registrasi.findOne({
       where: { id: getDataPembayaran.id_registrasi },
@@ -160,7 +163,7 @@ exports.acceptPembayaran = async (req, res) => {
 
     console.log(dataRegistrasi);
 
-    
+
     const dataAddPesertaDidik = await tb_pesertadidik.create({
       id_user: getDataPembayaran.id_user,
       id_registrasi: getDataPembayaran.id_registrasi,
@@ -168,7 +171,7 @@ exports.acceptPembayaran = async (req, res) => {
       jenis_kelamin: dataRegistrasi.jenis_kelamin,
       tempat_lahir: dataRegistrasi.tempat_lahir,
       tanggal_lahir: dataRegistrasi.tanggal_lahir,
-      agama : dataRegistrasi.agama,
+      agama: dataRegistrasi.agama,
       alamat: dataRegistrasi.alamat,
       nomer_hp: dataRegistrasi.nomer_hp
     });
