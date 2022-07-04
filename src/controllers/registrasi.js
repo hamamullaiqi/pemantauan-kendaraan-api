@@ -40,15 +40,22 @@ exports.getRegistrasiById = async (req, res) => {
 
 exports.getRegistrasi = async (req, res) => {
   try {
-    const { page, perPage, search } = req.query;
-    const filter = (search) => {
+    const { page, perPage, search, start, end } = req.query;
+    const filter = (search, start, end) => {
+    console.log(start, end);
+
       let result = "";
-      if (search !== undefined) {
-        result = { where: { nama_lengkap: { [Op.like]: `%${search}%` } } };
-      }
+      if (start !== undefined || end !== undefined || search !== undefined) {
+        result = {
+          where: {
+            nama_lengkap: { [Op.like]: `%${search}%` },
+            tgl_registrasi: { [Op.between]: [`${start}`, `${end} 23:59`] }
+          }
+        }
+      } 
       return result;
     };
-    const data = await paging(tb_registrasi, page, perPage, filter(search));
+    const data = await paging(tb_registrasi, page, perPage, filter(search, start, end));
     res.status(200).send({
       status: "succes",
       message: "success get data",
