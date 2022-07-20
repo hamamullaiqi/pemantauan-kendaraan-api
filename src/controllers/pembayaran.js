@@ -29,11 +29,69 @@ exports.addPembayaran = async (req, res) => {
   }
 };
 
+exports.getPembayaranReport = async (req, res) => {
+  try {
+    const { page, perPage, search, start, end  } = req.query;
+    console.log(page, perPage, search, start, end);
+    const filter = (search, start, end ) => {
+      let result = "";
+      if (start !== undefined || end !== undefined || search !== undefined) {
+        result = {
+          where: {
+            tanggal_pembayaran: { [Op.between]: [`${start}`, `${end} 23:59`] }
+          },
+          include: [
+            {
+              model: tb_registrasi,
+              as: "registrasi",
+              where: { nama_lengkap: { [Op.like]: `%${search}%` } },
+            },
+          ],
+        };
+      } else {
+        result = {
+          include: [
+            {
+              model: tb_registrasi,
+              as: "registrasi",
+            },
+          ],
+        };
+      }
+      return result;
+    };
+    let data = await paging(tb_pembayaran, page, perPage, filter(search, start, end ));
+    const total = data.total;
+
+    data = JSON.parse(JSON.stringify(data));
+    data = data.data.map((item) => {
+      return {
+        ...item,
+        bukti_pembayaran: process.env.FILE_PATH + item.bukti_pembayaran,
+      };
+    });
+    // data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
+
+    res.status(200).send({
+      status: "success",
+      message: "success get All",
+      data: { data, total },
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status: "failed",
+      message: "Server Error",
+    });
+  }
+};
+
 exports.getPembayaran = async (req, res) => {
   try {
     const { page, perPage, search } = req.query;
+    console.log(page, perPage, search);
     const filter = (search) => {
-      let result;
+      let result = "";
       if (search !== undefined) {
         result = {
           include: [
@@ -56,7 +114,7 @@ exports.getPembayaran = async (req, res) => {
       }
       return result;
     };
-    let data = await paging(tb_pembayaran, page, perPage, filter(search));
+    let data = await paging(tb_pembayaran, page, perPage, filter(search ));
     const total = data.total;
 
     data = JSON.parse(JSON.stringify(data));
