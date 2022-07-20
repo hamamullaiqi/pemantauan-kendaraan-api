@@ -38,7 +38,7 @@ exports.getRegistrasiById = async (req, res) => {
   }
 };
 
-exports.getRegistrasi = async (req, res) => {
+exports.getRegistrasiReport = async (req, res) => {
   try {
     const { page, perPage, search, start, end } = req.query;
     const filter = (search, start, end) => {
@@ -70,6 +70,38 @@ exports.getRegistrasi = async (req, res) => {
   }
 };
 
+exports.getRegistrasi = async (req, res) => {
+  try {
+    const { page, perPage, search} = req.query;
+    const filter = (search) => {
+
+
+      let result = "";
+      if (search !== undefined) {
+        result = {
+          where: {
+            nama_lengkap: { [Op.like]: `%${search}%` },
+          }
+        }
+      } 
+      return result;
+    };
+    const data = await paging(tb_registrasi, page, perPage, filter(search));
+    res.status(200).send({
+      status: "succes",
+      message: "success get data",
+      data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: "failed",
+      message: "Server Error",
+    });
+  }
+};
+
+
 exports.addRegistrasi = async (req, res) => {
   try {
     let tgl_registrasi = new Date();
@@ -86,6 +118,7 @@ exports.addRegistrasi = async (req, res) => {
     const data = await tb_registrasi.create({ tgl_registrasi, ...newData });
 
     const userCreate = await user.findOne({ where: { id: data.createBy } });
+    console.log(userCreate);
 
     if (userCreate.role === "admin") {
       const splitName = nama_lengkap.split(" ");
@@ -106,6 +139,8 @@ exports.addRegistrasi = async (req, res) => {
         password: hashedPassword,
         role: "siswa",
       });
+
+      console.log(newUser);
 
       await tb_pembayaran.create({
         id_user: newUser.id,

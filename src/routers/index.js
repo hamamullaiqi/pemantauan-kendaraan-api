@@ -7,6 +7,7 @@ const {
   acceptPembayaran,
   deletePembayaran,
   getPembayaranById,
+  getPembayaranReport,
 } = require("../controllers/pembayaran");
 const {
   getAllRegistrasi,
@@ -15,6 +16,7 @@ const {
   deleteRegistrasi,
   getRegistrasiById,
   updateRegistrasi,
+  getRegistrasiReport,
 } = require("../controllers/registrasi");
 const {
   getUserById,
@@ -47,6 +49,7 @@ router.post(
 router.get("/registrasi/all", getAllRegistrasi);
 router.get("/registrasi", getRegistrasi);
 router.get("/registrasi/:id", getRegistrasiById);
+router.get("/registrasi-report", getRegistrasiReport);
 router.post("/registrasi/add", addRegistrasi);
 router.delete("/registrasi/:id", deleteRegistrasi);
 router.patch("/registrasi/:id", updateRegistrasi);
@@ -63,6 +66,7 @@ router.patch("/edit-user/:id", uploadFile("image"), updateUser);
 router.post("/pembayaran", uploadFile("bukti_pembayaran"), addPembayaran);
 router.get("/pembayaran", getPembayaran);
 router.get("/pembayaran/:id", getPembayaranById);
+router.get("/pembayaran-report", getPembayaranReport);
 router.patch(
   "/pembayaran/:id",
   uploadFile("bukti_pembayaran"),
