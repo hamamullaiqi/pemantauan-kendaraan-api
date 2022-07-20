@@ -1,9 +1,9 @@
 {
     "development": {
         "username": "root",
-        "password": "mypass",
-        "database": "db_ppdb",
-        "host": "db",
+        "password": null,
+        "database": "db_ppdb01",
+        "host": "127.0.0.1",
         "dialect": "mysql"
     },
     "test": {

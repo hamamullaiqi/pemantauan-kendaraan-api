@@ -31,11 +31,14 @@ exports.addPembayaran = async (req, res) => {
 
 exports.getPembayaran = async (req, res) => {
   try {
-    const { page, perPage, search } = req.query;
-    const filter = (search) => {
-      let result;
-      if (search !== undefined) {
+    const { page, perPage, search, start, end } = req.query;
+    const filter = (search, start, end) => {
+      let result = "";
+      if (start !== undefined || end !== undefined || search !== undefined) {
         result = {
+          where: {
+            tgl_pembayaran: { [Op.between]: [`${start}`, `${end} 23:59`] },
+          },
           include: [
             {
               model: tb_registrasi,
@@ -56,7 +59,12 @@ exports.getPembayaran = async (req, res) => {
       }
       return result;
     };
-    let data = await paging(tb_pembayaran, page, perPage, filter(search));
+    let data = await paging(
+      tb_pembayaran,
+      page,
+      perPage,
+      filter(search, start, end)
+    );
     const total = data.total;
 
     data = JSON.parse(JSON.stringify(data));
@@ -92,8 +100,8 @@ exports.getPembayaranById = async (req, res) => {
       data = JSON.parse(JSON.stringify(data));
       data = {
         ...data,
-        bukti_pembayaran: process.env.FILE_PATH + data?.bukti_pembayaran
-      }
+        bukti_pembayaran: process.env.FILE_PATH + data?.bukti_pembayaran,
+      };
     }
 
     // data = { ...data[0], bukti_pembayaran: process.env.FILE_PATH + data[0].bukti_pembayaran }
@@ -155,14 +163,13 @@ exports.acceptPembayaran = async (req, res) => {
       { where: { id } }
     );
 
-    const getDataPembayaran = await tb_pembayaran.findOne({ where: { id } })
+    const getDataPembayaran = await tb_pembayaran.findOne({ where: { id } });
 
     const dataRegistrasi = await tb_registrasi.findOne({
       where: { id: getDataPembayaran.id_registrasi },
     });
 
     console.log(dataRegistrasi);
-
 
     const dataAddPesertaDidik = await tb_pesertadidik.create({
       id_user: getDataPembayaran.id_user,
@@ -173,7 +180,7 @@ exports.acceptPembayaran = async (req, res) => {
       tanggal_lahir: dataRegistrasi.tanggal_lahir,
       agama: dataRegistrasi.agama,
       alamat: dataRegistrasi.alamat,
-      nomer_hp: dataRegistrasi.nomer_hp
+      nomer_hp: dataRegistrasi.nomer_hp,
     });
 
     console.log(dataAddPesertaDidik);
