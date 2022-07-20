@@ -39,6 +39,7 @@ exports.getPembayaranReport = async (req, res) => {
         result = {
           where: {
             tanggal_pembayaran: { [Op.between]: [`${start}`, `${end} 23:59`] },
+            status_pembayaran: true,
           },
           include: [
             {
