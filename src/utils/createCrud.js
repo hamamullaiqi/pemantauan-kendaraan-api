@@ -31,7 +31,11 @@ export const createCrud = ({ models, option, onBeforeSave }) => {
         try {
             let body = req.body;
             if (!!onBeforeSave && typeof onBeforeSave === "function") {
-                body = onBeforeSave(body) || body;
+                const newBody = onBeforeSave(body);
+                if (!newBody) {
+                    throw Error("Body Not Allow Empty");
+                }
+                body = newBody;
             }
             const data = await models.create(body);
             return res.status(201).send({

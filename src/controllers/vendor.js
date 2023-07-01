@@ -1,9 +1,9 @@
 import { createCrud } from "../utils/createCrud";
 import getValidateInput from "../services/getValidateInput";
-const { produk } = require("../../models");
+const { vendor } = require("../../models");
 
-const produkCtrl = createCrud({
-    models: produk,
+const vendorCtrl = createCrud({
+    models: vendor,
     option: {
         findOpt: {
             attributes: {
@@ -13,4 +13,4 @@ const produkCtrl = createCrud({
     },
     onBeforeSave: getValidateInput,
 });
-export default produkCtrl;
+export default vendorCtrl;

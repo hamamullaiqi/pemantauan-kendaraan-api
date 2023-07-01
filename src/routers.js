@@ -11,6 +11,7 @@ import {
     updateUser,
 } from "./controllers/user.js";
 import produkCtrl from "./controllers/produk.js";
+import vendorCtrl from "./controllers/vendor.js";
 const router = Router();
 
 //auth
@@ -29,5 +30,6 @@ router.delete("/user/:id", deleteUser);
 router.patch("/edit-user/:id", uploadFile("image"), updateUser);
 
 router.use("/produk", produkCtrl);
+router.use("/vendor", vendorCtrl);
 
 export default router;
