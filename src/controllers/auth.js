@@ -1,12 +1,10 @@
-const { user } = require("../../models");
 
-const Joi = require("joi");
+import Joi from "joi";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import {user} from "../../models";
 
-const bcrypt = require("bcrypt");
-
-const jwt = require("jsonwebtoken");
-
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   const schema = Joi.object({
     username: Joi.string().min(5).required(),
     email: Joi.string().email().min(5).required(),
@@ -36,7 +34,7 @@ exports.register = async (req, res) => {
     });
 
     if (!userExist) {
-      const newUser = await user.create({
+      const newUser = await user?.create({
         username: req.body.username,
         email: req.body.email,
         password: hashedPassword,
@@ -71,7 +69,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   const schema = Joi.object({
     username: Joi.string().required(),
     password: Joi.string().min(6).required(),
@@ -137,7 +135,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.checkAuth = async (req, res) => {
+export const resfreshAuth = async (req, res) => {
   try {
     const id = req.user.id;
     console.log(id);

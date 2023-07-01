@@ -1,6 +1,6 @@
-const multer = require("multer")
+import multer from "multer";
 
-exports.uploadFile = (imageFile) => {
+export const uploadFile = (imageFile) => {
 
     //path
     const storage = multer.diskStorage({
