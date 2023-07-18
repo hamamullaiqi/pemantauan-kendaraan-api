@@ -33,15 +33,15 @@ module.exports = (sequelize, DataTypes) => {
     kendaraan_masuk.init(
         {
             nama_supir: DataTypes.STRING,
-            produk_id: DataTypes.STRING,
-            vendor_id: DataTypes.STRING,
+            produk_id: DataTypes.UUID,
+            vendor_id: DataTypes.UUID,
             waktu_masuk: DataTypes.DATE,
             keterangan: DataTypes.STRING,
             gross: DataTypes.INTEGER,
             tare: DataTypes.INTEGER,
             nett: DataTypes.INTEGER,
             nomer_polisi: DataTypes.STRING,
-            petugas_id: DataTypes.STRING,
+            petugas_id: DataTypes.UUID,
         },
         {
             sequelize,

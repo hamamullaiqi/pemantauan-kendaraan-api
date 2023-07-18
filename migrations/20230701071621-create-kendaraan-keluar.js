@@ -15,10 +15,22 @@ module.exports = {
                     type: Sequelize.STRING,
                 },
                 produk_id: {
-                    type: Sequelize.STRING,
+                    type: Sequelize.UUID,
+                    references: {
+                        model: "produks",
+                        key: "id",
+                    },
+                    onUpdate: "CASCADE",
+                    onDelete: "CASCADE",
                 },
                 vendor_id: {
-                    type: Sequelize.STRING,
+                    type: Sequelize.UUID,
+                    references: {
+                        model: "vendors",
+                        key: "id",
+                    },
+                    onUpdate: "CASCADE",
+                    onDelete: "CASCADE",
                 },
                 waktu_keluar: {
                     type: Sequelize.DATE,
@@ -39,7 +51,13 @@ module.exports = {
                     type: Sequelize.STRING,
                 },
                 petugas_id: {
-                    type: Sequelize.STRING,
+                    type: Sequelize.UUID,
+                    references: {
+                        model: "users",
+                        key: "id",
+                    },
+                    onUpdate: "CASCADE",
+                    onDelete: "CASCADE",
                 },
                 createdAt: {
                     allowNull: false,
