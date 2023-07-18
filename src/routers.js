@@ -19,7 +19,7 @@ router.post("/register", register);
 router.post("/login", login);
 
 //checkAuth
-router.get("/check-auth", checkAuth, resfreshAuth);
+router.get("/isMe", checkAuth, resfreshAuth);
 
 //user
 router.get("/user/:id", getUserById);
