@@ -11,8 +11,8 @@ const produkCtrl = createCrud({
         if (!!search || !!filters) {
             toFilters = {
                 [Op.or]: [
-                    { nama: { [Op.like]: search } },
-                    { keterangan: { [Op.like]: search } },
+                    { nama: { [Op.like]: `%${search}%` } },
+                    { keterangan: { [Op.like]: `%${search}%` } },
                 ],
             };
         }
