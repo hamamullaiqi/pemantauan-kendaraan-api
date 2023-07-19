@@ -1,19 +1,23 @@
 import { Router } from "express";
 import { paging } from "../controllers/utils";
+import { Op } from "sequelize";
 
 export const createCrud = ({ models, option, onBeforeSave }) => {
     const rtr = Router();
     rtr.get("/paging", async (req, res) => {
         try {
-            const { page, perPage, search } = req.query;
+            const { page, perPage } = req.query;
+            // let toFilters = {};
+            // if (search || filters) {
+            //     const searchRegEx = new RegExp(search);
+            //     toFilters={...toFilters, where: {
+            //         [Op.or]: []
+            //     }}
+            // }
 
-            const data = await paging(
-                models,
-                page,
-                perPage,
-                undefined,
-                option?.findOpt
-            );
+            const opt = option(req, res);
+
+            const data = await paging(models, page, perPage, undefined, opt);
             res.status(200).send({
                 status: "Success",
                 data: data,
