@@ -1,5 +1,5 @@
 import { createCrud } from "../utils/createCrud";
-import getValidateInput from "../services/getValidateInput";
+import getValidateInputVendor from "../services/getValidateInputVendor";
 const { vendor } = require("../../models");
 
 const vendorCtrl = createCrud({
@@ -9,6 +9,6 @@ const vendorCtrl = createCrud({
             exclude: ["createdAt", "updatedAt", "id"],
         },
     }),
-    onBeforeSave: getValidateInput,
+    onBeforeSave: getValidateInputVendor,
 });
 export default vendorCtrl;
