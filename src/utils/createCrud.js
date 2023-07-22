@@ -96,6 +96,7 @@ export const createCrud = ({ models, option, onBeforeSave }) => {
         try {
             const { id } = req.params;
             const body = req.body;
+            console.log("user", req.user);
             let exist = await models.findOne({
                 where: {
                     id,

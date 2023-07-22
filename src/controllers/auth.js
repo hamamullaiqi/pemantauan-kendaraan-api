@@ -117,21 +117,21 @@ export const login = async (req, res) => {
         }
 
         const token = jwt.sign({ ...userExist }, process.env.SECRET_KEY);
+        console.log(token);
 
         res.status(200).send({
             status: "success",
             message: "Login Success",
-            data: {
-                token,
-                // user: {
-                //     id: userExist.id,
-                //     username: userExist.username,
-                //     role: userExist.role,
-                //     email: userExist.email,
-                //     image: userExist?.image,
-                //     token,
-                // },
-            },
+
+            token,
+            // user: {
+            //     id: userExist.id,
+            //     username: userExist.username,
+            //     role: userExist.role,
+            //     email: userExist.email,
+            //     image: userExist?.image,
+            //     token,
+            // },
         });
     } catch (error) {
         console.log(error);

@@ -14,13 +14,6 @@ import produkCtrl from "./controllers/produk.js";
 import vendorCtrl from "./controllers/vendor.js";
 const router = Router();
 
-//auth
-router.post("/register", register);
-router.post("/login", login);
-
-//checkAuth
-router.get("/isMe", checkAuth, resfreshAuth);
-
 //user
 router.get("/user/:id", getUserById);
 router.get("/data-users/all", getUsers);
