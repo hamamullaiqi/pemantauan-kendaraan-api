@@ -19,7 +19,7 @@ const produkCtrl = createCrud({
         // console.log(searchRegEx);
         return {
             attributes: {
-                exclude: ["createdAt", "updatedAt", "id"],
+                exclude: ["createdAt", "updatedAt"],
             },
             where: toFilters,
         };

@@ -43,7 +43,7 @@ export const createCrud = ({ models, option, onBeforeSave }) => {
             }
             const data = await models.create(body);
             return res.status(201).send({
-                status: "Add Success",
+                status: "success",
                 data: data,
             });
         } catch (error) {
@@ -73,13 +73,14 @@ export const createCrud = ({ models, option, onBeforeSave }) => {
                     message: "Not Found Record",
                 });
             }
+            console.log(body);
             const data = await models.update(body, {
                 where: {
                     id,
                 },
             });
             return res.status(200).send({
-                status: "Update Success",
+                status: "success",
                 data: data,
             });
         } catch (error) {
@@ -113,7 +114,7 @@ export const createCrud = ({ models, option, onBeforeSave }) => {
                 },
             });
             return res.status(200).send({
-                status: "Delete Success",
+                status: "success",
                 data: data,
             });
         } catch (error) {
