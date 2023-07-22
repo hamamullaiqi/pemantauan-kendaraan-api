@@ -4,13 +4,11 @@ const { vendor } = require("../../models");
 
 const vendorCtrl = createCrud({
     models: vendor,
-    option: {
-        findOpt: {
-            attributes: {
-                exclude: ["createdAt", "updatedAt", "id"],
-            },
+    option: (req, res) => ({
+        attributes: {
+            exclude: ["createdAt", "updatedAt", "id"],
         },
-    },
+    }),
     onBeforeSave: getValidateInput,
 });
 export default vendorCtrl;
