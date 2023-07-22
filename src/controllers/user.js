@@ -1,205 +1,30 @@
-import { user } from "../../models/user.js";
-import path from "path";
-import fs from "fs";
-import { paging } from "./utils.js";
+import { createCrud } from "../utils/createCrud";
+import getValidateInput from "../services/getValidateInput";
 import { Op } from "sequelize";
-import Joi from "joi";
-import bcrypt from "bcrypt";
+import getValidateInputUser from "../services/getValidateInputUser";
+const { user } = require("../../models");
 
-export const getUserById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        let datauser = await user.findOne({
-            where: { id },
-            attributes: {
-                exclude: ["password"],
-            },
-        });
-
-        if (datauser.image !== null) {
-            datauser = JSON.parse(JSON.stringify(datauser));
-
-            datauser = {
-                ...datauser,
-                image: process.env.FILE_PATH + datauser.image,
+const userCtrl = createCrud({
+    models: user,
+    option: (req, res) => {
+        const { search, filters } = req.query;
+        let toFilters;
+        if (!!search || !!filters) {
+            toFilters = {
+                [Op.or]: [
+                    { username: { [Op.like]: `%${search}%` } },
+                    { fullname: { [Op.like]: `%${search}%` } },
+                ],
             };
         }
-
-        res.status(200).send({
-            status: "succes",
-            message: "success get datauser by ID",
-            data: { datauser },
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            status: "failed",
-            message: "Server Error",
-        });
-    }
-};
-
-export const getUsers = async (req, res) => {
-    try {
-        const users = await user.findAll({
+        // console.log(searchRegEx);
+        return {
             attributes: {
-                exclude: ["password", "createdAt", "updatedAt"],
+                exclude: ["createdAt", "updatedAt"],
             },
-        });
-        res.status(200).send({
-            status: "Success get all data Users",
-            data: { users },
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(400).send({
-            status: "Error Failed get users",
-            message: "Undifend server error",
-        });
-    }
-};
-
-export const getUsersAll = async (req, res) => {
-    try {
-        const { page, perPage, search } = req.query;
-        const filter = (search) => {
-            let result = "";
-            if (search !== undefined) {
-                result = { where: { username: { [Op.like]: `%${search}%` } } };
-            }
-            return result;
+            where: toFilters,
         };
-        const data = await paging(user, page, perPage, filter(search));
-
-        res.status(200).send({
-            status: "Success get all data Users",
-            data,
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(400).send({
-            status: "Error Failed get users",
-            message: "Undifend server error",
-        });
-    }
-};
-
-export const addUser = async (req, res) => {
-    const schema = Joi.object({
-        username: Joi.string().min(5).required(),
-        email: Joi.string().email().min(5).required(),
-        password: Joi.string().min(6).required(),
-        role: Joi.string().required(),
-    });
-
-    const { error } = schema.validate(req.body);
-
-    if (error)
-        return res.status(400).send({
-            error: {
-                message: error.details[0].message,
-            },
-        });
-
-    try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-        const newData = ({ username, email, role } = req.body);
-        const data = await user.create({
-            ...newData,
-            password: hashedPassword,
-        });
-
-        res.status(201).send({
-            status: "Succes add user",
-            message: "Data has been created",
-            data: { data },
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            status: "Error",
-            message: "Data not created because server Error",
-        });
-    }
-};
-
-export const updateUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        let dataUser = await user.findOne({
-            where: {
-                id,
-            },
-        });
-
-        if (dataUser.image !== null) {
-            const replaceFile = (filePath) => {
-                //menggabungkan direktori controller , uploads dan nama file Product
-
-                filePath = path.join(__dirname, "../../uploads", filePath);
-                fs.unlink(filePath, (err) => console.log(err));
-            };
-
-            replaceFile(dataUser.image);
-        }
-
-        let dataUpdate = {
-            username: req.body.username,
-            email: req.body.email,
-            image: req.file.filename,
-        };
-
-        console.log(id);
-
-        let data = await user.update(dataUpdate, {
-            where: {
-                id,
-            },
-            ...dataUpdate,
-        });
-
-        data = JSON.parse(JSON.stringify(data));
-        console.log(data);
-
-        data = {
-            ...data,
-            image: process.env.FILE_PATH + data.image,
-        };
-
-        res.status(200).send({
-            status: "Success update all data Users",
-            data: {
-                data,
-                // dataUpdate,
-            },
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            status: "Error Failed update users",
-            message: "Undifend server error",
-        });
-    }
-};
-
-export const deleteUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const data = await user.destroy({ where: { id } });
-
-        res.status(200).send({
-            status: "success",
-            message: "success delete user",
-            data: { data },
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            status: "Error",
-            message: "Data not created because server Error",
-        });
-    }
-};
+    },
+    onBeforeSave: getValidateInputUser,
+});
+export default userCtrl;

@@ -9,18 +9,20 @@ import {
     deleteUser,
     addUser,
     updateUser,
-} from "./controllers/user.js";
+} from "./controllers/user.old.js";
 import produkCtrl from "./controllers/produk.js";
 import vendorCtrl from "./controllers/vendor.js";
+import userCtrl from "./controllers/user.js";
 const router = Router();
 
 //user
-router.get("/user/:id", getUserById);
-router.get("/data-users/all", getUsers);
-router.get("/users", getUsersAll);
-router.post("/user/add", addUser);
-router.delete("/user/:id", deleteUser);
-router.patch("/edit-user/:id", uploadFile("image"), updateUser);
+router.use("/user", userCtrl);
+// router.get("/user/:id", getUserById);
+// router.get("/data-users/all", getUsers);
+// router.get("/users", getUsersAll);
+// router.post("/user/add", addUser);
+// router.delete("/user/:id", deleteUser);
+// router.patch("/edit-user/:id", uploadFile("image"), updateUser);
 
 router.use("/produk", produkCtrl);
 router.use("/vendor", vendorCtrl);
