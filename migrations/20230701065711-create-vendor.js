@@ -19,7 +19,7 @@ module.exports = {
                 keterangan: {
                     type: Sequelize.STRING,
                 },
-                address: {
+                alamat: {
                     type: Sequelize.STRING,
                 },
                 createdAt: {
