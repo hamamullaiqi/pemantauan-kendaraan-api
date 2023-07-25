@@ -7,6 +7,10 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
     rtr.get("/paging", async (req, res) => {
         try {
             const { page, perPage } = req.query;
+            const { level } = req.user;
+            if (!!minLevel && (minLevel & level) < 0) {
+                throw Error("Error Privilage");
+            }
             // let toFilters = {};
             // if (search || filters) {
             //     const searchRegEx = new RegExp(search);
@@ -26,7 +30,7 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
             console.log(error);
             res.status(500).send({
                 status: "failed",
-                message: "Server Error",
+                message: !!error || "Server Error",
             });
         }
     });
@@ -34,7 +38,7 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
     rtr.post("/add", async (req, res) => {
         try {
             const { level } = req.user;
-            if ((level & minLevel) > 0) {
+            if (!!minLevel && (minLevel & level) < 0) {
                 throw Error("Error Privilage");
             }
             let body = req.body;
@@ -65,7 +69,7 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
     rtr.patch("/edit/:id", async (req, res) => {
         try {
             const { level } = req.user;
-            if ((level & minLevel) > 0) {
+            if (!!minLevel && (minLevel & level) < 0) {
                 throw Error("Error Privilage");
             }
             const { id } = req.params;
@@ -104,7 +108,7 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
     rtr.delete("/delete/:id", async (req, res) => {
         try {
             const { level } = req.user;
-            if ((level & minLevel) > 0) {
+            if (!!minLevel && (minLevel & level) < 0) {
                 throw Error("Error Privilage");
             }
             const { id } = req.params;

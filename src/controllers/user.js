@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 
 const userCtrl = createCrud({
     models: user,
+    minLevel: 0x1ff0,
     onBeforeSave: async (body) => {
         console.log("body", body);
         getValidateInputUser(body);
