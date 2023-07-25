@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const uuid = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
     class kendaraan_masuk extends Model {
         /**
@@ -48,5 +50,7 @@ module.exports = (sequelize, DataTypes) => {
             modelName: "kendaraan_masuk",
         }
     );
+    kendaraan_masuk.beforeCreate((item) => (item.id = uuid.v4()));
+
     return kendaraan_masuk;
 };

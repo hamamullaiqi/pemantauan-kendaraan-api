@@ -3,9 +3,19 @@ import getValidateInput from "../services/getValidateInput";
 import { Op } from "sequelize";
 import getValidateInputUser from "../services/getValidateInputUser";
 const { user } = require("../../models");
+import bcrypt from "bcrypt";
 
 const userCtrl = createCrud({
     models: user,
+    onBeforeSave: async (body) => {
+        console.log("body", body);
+        getValidateInputUser(body);
+        const { password, ...rest } = body;
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        console.log("hast", hashedPassword);
+        return { ...rest, password: hashedPassword };
+    },
     option: (req, res) => {
         const { search, filters } = req.query;
         let toFilters;
@@ -13,7 +23,7 @@ const userCtrl = createCrud({
             toFilters = {
                 [Op.or]: [
                     { username: { [Op.like]: `%${search}%` } },
-                    { fullname: { [Op.like]: `%${search}%` } },
+                    { full_name: { [Op.like]: `%${search}%` } },
                 ],
             };
         }
@@ -25,6 +35,6 @@ const userCtrl = createCrud({
             where: toFilters,
         };
     },
-    onBeforeSave: getValidateInputUser,
+    // onBeforeSave: getValidateInputUser,
 });
 export default userCtrl;

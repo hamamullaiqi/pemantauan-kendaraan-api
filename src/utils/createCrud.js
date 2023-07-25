@@ -2,7 +2,7 @@ import { Router } from "express";
 import { paging } from "../controllers/utils";
 import { Op } from "sequelize";
 
-export const createCrud = ({ models, option, onBeforeSave }) => {
+export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
     const rtr = Router();
     rtr.get("/paging", async (req, res) => {
         try {
@@ -33,18 +33,23 @@ export const createCrud = ({ models, option, onBeforeSave }) => {
 
     rtr.post("/add", async (req, res) => {
         try {
+            const { level } = req.user;
+            if ((level & minLevel) > 0) {
+                throw Error("Error Privilage");
+            }
             let body = req.body;
             if (!!onBeforeSave && typeof onBeforeSave === "function") {
-                const newBody = onBeforeSave(body);
+                const newBody = await onBeforeSave(body);
+                console.log("new", newBody);
                 if (!newBody) {
                     throw Error("Body Not Allow Empty");
                 }
                 body = newBody;
             }
-            const data = await models.create(body);
+            await models.create(body);
             return res.status(201).send({
                 status: "success",
-                data: data,
+                // data: data,
             });
         } catch (error) {
             console.log(error);
@@ -59,6 +64,10 @@ export const createCrud = ({ models, option, onBeforeSave }) => {
     });
     rtr.patch("/edit/:id", async (req, res) => {
         try {
+            const { level } = req.user;
+            if ((level & minLevel) > 0) {
+                throw Error("Error Privilage");
+            }
             const { id } = req.params;
             const body = req.body;
             let exist = await models.findOne({
@@ -94,6 +103,10 @@ export const createCrud = ({ models, option, onBeforeSave }) => {
 
     rtr.delete("/delete/:id", async (req, res) => {
         try {
+            const { level } = req.user;
+            if ((level & minLevel) > 0) {
+                throw Error("Error Privilage");
+            }
             const { id } = req.params;
             const body = req.body;
             console.log("user", req.user);
