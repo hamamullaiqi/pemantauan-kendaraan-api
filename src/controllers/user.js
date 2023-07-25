@@ -23,8 +23,8 @@ const userCtrl = createCrud({
         if (!!search || !!filters) {
             toFilters = {
                 [Op.or]: [
-                    { username: { [Op.like]: `%${search}%` } },
-                    { full_name: { [Op.like]: `%${search}%` } },
+                    { username: { [Op.regexp]: search } },
+                    { full_name: { [Op.regexp]: search } },
                 ],
             };
         }

@@ -30,7 +30,7 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
             console.log(error);
             res.status(500).send({
                 status: "failed",
-                message: !!error || "Server Error",
+                message: error || "Server Error",
             });
         }
     });
@@ -100,7 +100,7 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
             console.log(error);
             return res.status(500).send({
                 status: "failed",
-                message: "Server Error",
+                message: error || "Server Error",
             });
         }
     });
@@ -139,7 +139,7 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
             console.log(error);
             return res.status(500).send({
                 status: "failed",
-                message: "Server Error",
+                message: error || "Server Error",
             });
         }
     });
