@@ -13,6 +13,7 @@ import {
 import produkCtrl from "./controllers/produk.js";
 import vendorCtrl from "./controllers/vendor.js";
 import userCtrl from "./controllers/user.js";
+import kendaaraanKeluarCtrl from "./controllers/kendaraan_keluar.js";
 const router = Router();
 
 //user
@@ -26,5 +27,6 @@ router.use("/user", userCtrl);
 
 router.use("/produk", produkCtrl);
 router.use("/vendor", vendorCtrl);
+router.use("/kendaraan_keluar", kendaaraanKeluarCtrl);
 
 export default router;
