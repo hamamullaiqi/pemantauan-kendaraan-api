@@ -151,8 +151,6 @@ export const updateUser = async (req, res) => {
             image: req.file.filename,
         };
 
-        console.log(id);
-
         let data = await user.update(dataUpdate, {
             where: {
                 id,
@@ -161,7 +159,6 @@ export const updateUser = async (req, res) => {
         });
 
         data = JSON.parse(JSON.stringify(data));
-        console.log(data);
 
         data = {
             ...data,

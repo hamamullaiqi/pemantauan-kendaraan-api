@@ -3,7 +3,7 @@ import Joi from "joi";
 export default function getValidateInput(body) {
     const schema = Joi.object({
         nama: Joi.string().required(),
-        keterangan: Joi.string(),
+        keterangan: Joi.string().allow(null, ""),
     });
     const { error } = schema.validate(body);
     if (!!error) {

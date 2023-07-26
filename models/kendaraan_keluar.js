@@ -1,5 +1,8 @@
 "use strict";
+const dayjs = require("dayjs");
 const { Model } = require("sequelize");
+const uuid = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
     class kendaraan_keluar extends Model {
         /**
@@ -42,5 +45,8 @@ module.exports = (sequelize, DataTypes) => {
             modelName: "kendaraan_keluar",
         }
     );
+    kendaraan_keluar.beforeCreate((item) => (item.id = uuid.v4()));
+    kendaraan_keluar.beforeCreate((item) => (item.waktu_keluar = dayjs()));
+
     return kendaraan_keluar;
 };
