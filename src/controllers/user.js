@@ -9,12 +9,10 @@ const userCtrl = createCrud({
     models: user,
     minLevel: 0x1ff0,
     onBeforeSave: async (body) => {
-        console.log("body", body);
         getValidateInputUser(body);
         const { password, ...rest } = body;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        console.log("hast", hashedPassword);
         return { ...rest, password: hashedPassword };
     },
     option: (req, res) => {

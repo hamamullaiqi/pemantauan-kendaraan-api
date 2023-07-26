@@ -117,7 +117,6 @@ export const login = async (req, res) => {
         }
 
         const token = jwt.sign({ ...userExist }, process.env.SECRET_KEY);
-        console.log(token);
 
         res.status(200).send({
             status: "success",
@@ -145,7 +144,6 @@ export const login = async (req, res) => {
 export const resfreshAuth = async (req, res) => {
     try {
         const id = req.user.id;
-        console.log(id);
 
         const dataUser = await user.findOne({
             where: {

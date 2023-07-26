@@ -13,7 +13,6 @@ export const paging = async (
         limit: parseInt(perPage),
         order: [["createdAt", "DESC"]],
     };
-    console.log(pages);
     const data = await model.findAndCountAll(pages);
 
     return { perPage: parseInt(perPage), page: parseInt(page), ...data };
