@@ -2,7 +2,13 @@ import { Router } from "express";
 import { paging } from "../controllers/utils";
 import { Op } from "sequelize";
 
-export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
+export const createCrud = ({
+    models,
+    option,
+    onBeforeSave,
+    minLevel,
+    onAfterSave,
+}) => {
     const rtr = Router();
     rtr.get("/paging", async (req, res) => {
         try {
@@ -49,7 +55,14 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
                 }
                 body = newBody;
             }
-            await models.create(body);
+            const result = await models.create(body);
+            if (
+                !!result?.dataValues &&
+                !!onAfterSave &&
+                typeof onAfterSave === "function"
+            ) {
+                await onAfterSave(result?.dataValues);
+            }
             return res.status(201).send({
                 status: "success",
                 // data: data,
@@ -61,6 +74,7 @@ export const createCrud = ({ models, option, onBeforeSave, minLevel }) => {
                 message:
                     error?.parent?.sqlMessage ||
                     error.message ||
+                    error ||
                     "Server Error",
             });
         }

@@ -1,8 +1,8 @@
 import { createCrud } from "../utils/createCrud";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import { Router } from "express";
 import getValidateInputTimbangan from "../services/getValidateInputTimbangan";
-const { kendaraan_keluar } = require("../../models");
+const { kendaraan_keluar, timbangan_kendaraan } = require("../../models");
 
 let router = Router();
 
@@ -37,6 +37,27 @@ router = createCrud({
             petugas_id,
             nett,
         };
+    },
+    onAfterSave: async (result) => {
+        const { id, nomer_polisi } = result || { id: null, nomer_polisi: "" };
+        if (!id) {
+            throw Error("invalid input kendaraan keluar");
+        }
+        const existData = await timbangan_kendaraan.findOne({
+            where: { nomer_polisi },
+        });
+        if (!existData) {
+            throw Error("kendaraan tidak pernah masuk");
+        }
+
+        await timbangan_kendaraan.update(
+            { id_keluar: id },
+            {
+                where: {
+                    nomer_polisi,
+                },
+            }
+        );
     },
 });
 
