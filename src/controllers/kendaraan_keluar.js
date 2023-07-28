@@ -61,4 +61,47 @@ router = createCrud({
     },
 });
 
+router.delete("/delete_keluar/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        let exist = await timbangan_kendaraan.findOne({
+            where: {
+                id_keluar: id,
+            },
+        });
+
+        if (!exist) {
+            return res.status(404).send({
+                status: "Not Found",
+                message: "Not Found Record",
+            });
+        }
+        await timbangan_kendaraan.update(
+            { id_keluar: null },
+            {
+                where: {
+                    id: exist.id,
+                },
+            }
+        );
+
+        await kendaraan_keluar.destroy({
+            where: {
+                id,
+            },
+        });
+
+        return res.status(200).send({
+            status: "success",
+            // data: data,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            status: "failed",
+            message: error || "Server Error",
+        });
+    }
+});
+
 export default router;
