@@ -76,6 +76,12 @@ router.delete("/delete_keluar/:id", async (req, res) => {
                 message: "Not Found Record",
             });
         }
+
+        await kendaraan_keluar.destroy({
+            where: {
+                id,
+            },
+        });
         await timbangan_kendaraan.update(
             { id_keluar: null },
             {
@@ -84,12 +90,6 @@ router.delete("/delete_keluar/:id", async (req, res) => {
                 },
             }
         );
-
-        await kendaraan_keluar.destroy({
-            where: {
-                id,
-            },
-        });
 
         return res.status(200).send({
             status: "success",

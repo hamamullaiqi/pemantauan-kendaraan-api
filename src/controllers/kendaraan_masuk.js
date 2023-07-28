@@ -2,7 +2,11 @@ import { createCrud } from "../utils/createCrud";
 import { Op } from "sequelize";
 import { Router } from "express";
 import getValidateInputTimbangan from "../services/getValidateInputTimbangan";
-const { kendaraan_masuk, timbangan_kendaraan } = require("../../models");
+const {
+    kendaraan_masuk,
+    timbangan_kendaraan,
+    kendaraan_keluar,
+} = require("../../models");
 
 let router = Router();
 
@@ -63,14 +67,22 @@ router.delete("/delete_masuk/:id", async (req, res) => {
                 message: "Not Found Record",
             });
         }
-        await timbangan_kendaraan.destroy({
-            where: {
-                id: exist.id,
-            },
-        });
+
+        if (!!exist?.dataValues?.id_keluar) {
+            await kendaraan_keluar.destroy({
+                where: {
+                    id: exist?.dataValues?.id_keluar,
+                },
+            });
+        }
         await kendaraan_masuk.destroy({
             where: {
                 id,
+            },
+        });
+        await timbangan_kendaraan.destroy({
+            where: {
+                id: exist.id,
             },
         });
 
