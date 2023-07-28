@@ -2,7 +2,7 @@ import { createCrud } from "../utils/createCrud";
 import { Op } from "sequelize";
 import { Router } from "express";
 import getValidateInputTimbangan from "../services/getValidateInputTimbangan";
-const { kendaraan_masuk } = require("../../models");
+const { kendaraan_masuk, timbangan_kendaraan } = require("../../models");
 
 let router = Router();
 
@@ -37,6 +37,14 @@ router = createCrud({
             petugas_id,
             nett,
         };
+    },
+    onAfterSave: async (result) => {
+        const { id, nomer_polisi } = result || { id: null, nomer_polisi: "" };
+        if (!id) {
+            throw Error("invalid input kendaraan masuk");
+        }
+
+        await timbangan_kendaraan.create({ id_masuk: id, nomer_polisi });
     },
 });
 

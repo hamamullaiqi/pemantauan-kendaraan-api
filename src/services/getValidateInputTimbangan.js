@@ -6,8 +6,8 @@ export default function getValidateInputTimbangan(body) {
     produk_id: Joi.string().required(),
     vendor_id: Joi.string().required(),
     keterangan: Joi.string().allow(null, ""),
-    gross: Joi.string().required(),
-    tare: Joi.string().required(),
+    gross: Joi.number().required(),
+    tare: Joi.number().required(),
     nomer_polisi: Joi.string().required(),
   });
   const { error } = schema.validate(body);
