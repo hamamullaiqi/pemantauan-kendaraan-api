@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: "id_masuk",
             });
             kendaraan_masuk.belongsTo(models.produk, {
-                as: "produkKeluar",
+                as: "produkMasuk",
                 foreignKey: {
                     name: "produk_id",
                 },

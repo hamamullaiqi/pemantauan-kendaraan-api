@@ -6,6 +6,8 @@ const {
     kendaraan_masuk,
     timbangan_kendaraan,
     kendaraan_keluar,
+    vendor,
+    produk,
 } = require("../../models");
 
 let router = Router();
@@ -18,8 +20,8 @@ router = createCrud({
         if (!!search || !!filters) {
             toFilters = {
                 [Op.or]: [
-                    { nama: { [Op.regexp]: search } },
-                    { keterangan: { [Op.regexp]: search } },
+                    { nama_supir: { [Op.regexp]: search } },
+                    { nomer_polisi: { [Op.regexp]: search } },
                 ],
             };
         }
@@ -28,6 +30,22 @@ router = createCrud({
             attributes: {
                 exclude: ["createdAt", "updatedAt"],
             },
+            include: [
+                {
+                    model: vendor,
+                    as: "vendorMasuk",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt"],
+                    },
+                },
+                {
+                    model: produk,
+                    as: "produkMasuk",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt"],
+                    },
+                },
+            ],
             where: toFilters,
         };
     },
