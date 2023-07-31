@@ -21,6 +21,7 @@ module.exports = {
                 full_name: "admin",
                 password: bcrypt.hashSync("123456", bcrypt.genSaltSync(10)),
                 level: 0x1fff0,
+                role: "ADM",
             },
         ]);
     },

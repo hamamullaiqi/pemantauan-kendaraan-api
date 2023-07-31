@@ -5,10 +5,11 @@ export default function getValidateInputUser(body) {
         username: Joi.string().required(),
         password: Joi.string().min(8).required(),
         full_name: Joi.string().required(),
-        level: Joi.number().required(),
+        // level: Joi.number().required(),
         email: Joi.string().allow(null, ""),
         no_telp: Joi.string().allow(null, ""),
         image: Joi.string().allow(null, ""),
+        role: Joi.string().required(),
     });
     const { error } = schema.validate(body);
     if (!!error) {
