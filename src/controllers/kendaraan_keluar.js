@@ -2,6 +2,7 @@ import { createCrud } from "../utils/createCrud";
 import { Op, where } from "sequelize";
 import { Router } from "express";
 import getValidateInputTimbangan from "../services/getValidateInputTimbangan";
+import dayjs from "dayjs";
 const {
     kendaraan_keluar,
     timbangan_kendaraan,
@@ -14,21 +15,39 @@ let router = Router();
 router = createCrud({
     models: kendaraan_keluar,
     option: (req, res) => {
-        const { search, filters } = req.query;
+        let { search, filters } = req.query;
+        if (!!filters) {
+            filters = JSON.parse(filters);
+        }
+        console.log("filters", filters);
         let toFilters;
-        if (!!search || !!filters) {
+        if (!!search) {
             toFilters = {
+                ...toFilters,
                 [Op.or]: [
                     { nama_supir: { [Op.regexp]: search } },
                     { nomer_polisi: { [Op.regexp]: search } },
                 ],
             };
         }
+        if (!!filters?.date) {
+            const [start, end] = filters?.date;
+            const newStartDate = dayjs(start).startOf("day").format();
+            const newEndDate = dayjs(end).endOf("day").format();
+            console.log("date", newStartDate, newEndDate);
+            toFilters = {
+                ...toFilters,
+                waktu_keluar: {
+                    [Op.gte]: newStartDate,
+                    [Op.lte]: newEndDate,
+                },
+            };
+        }
         // console.log(searchRegEx);
         return {
-            attributes: {
-                exclude: ["createdAt", "updatedAt"],
-            },
+            // attributes: {
+            //     exclude: ["createdAt", "updatedAt"],
+            // },
             include: [
                 {
                     model: vendor,

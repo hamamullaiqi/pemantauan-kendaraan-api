@@ -46,9 +46,9 @@ router = createCrud({
         }
         // console.log(searchRegEx);
         return {
-            attributes: {
-                exclude: ["createdAt", "updatedAt"],
-            },
+            // attributes: {
+            //     exclude: ["createdAt", "updatedAt"],
+            // },
             include: [
                 {
                     model: vendor,
