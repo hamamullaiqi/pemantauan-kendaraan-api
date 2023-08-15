@@ -2,6 +2,7 @@ import Joi from "joi";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { user } from "../../models";
+import { sendEmail } from "../library/email/sendEmail";
 
 export const register = async (req, res) => {
     const schema = Joi.object({
@@ -42,7 +43,8 @@ export const register = async (req, res) => {
 
             const token = jwt.sign(
                 { email: newUser.email },
-                process.env.SECRET_KEY
+                process.env.SECRET_KEY,
+                { expiresIn: "1h" }
             );
             res.status(201).send({
                 status: "success",
@@ -173,6 +175,26 @@ export const resfreshAuth = async (req, res) => {
         res.send({
             status: "success...",
             data: { dataUser },
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({
+            status: "failed",
+            message: "Server Error",
+        });
+    }
+};
+
+export const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            throw new Error("Invalid Email");
+        }
+        await sendEmail({
+            email_address: email,
+            template_name: "otp",
+            data: { email },
         });
     } catch (error) {
         console.log(error.message);

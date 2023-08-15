@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import router from "./routers.js";
 import { checkAuth } from "./middlewares/checkAuth.js";
 import authCtrl from "./utils/auth.js";
-import { resfreshAuth } from "./controllers/auth.js";
+import { forgotPassword, resfreshAuth } from "./controllers/auth.js";
 dotenv.config();
 
 const app = express();
