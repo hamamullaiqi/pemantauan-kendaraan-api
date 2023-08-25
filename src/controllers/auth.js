@@ -82,12 +82,12 @@ export const login = async (req, res) => {
 
     const { error } = schema.validate(req.body);
 
-    if (error)
-        res.status(400).send({
-            error: {
-                message: error.details[0].message,
-            },
+    if (error) {
+        return res.status(400).send({
+            staus: "Invalid Input",
+            message: error.details[0].message,
         });
+    }
 
     try {
         const userExist = await user.findOne({
@@ -121,7 +121,7 @@ export const login = async (req, res) => {
 
         const token = jwt.sign({ ...userExist }, process.env.SECRET_KEY);
 
-        res.status(200).send({
+        return res.status(200).send({
             status: "success",
             message: "Login Success",
 
@@ -137,7 +137,7 @@ export const login = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             status: "failed",
             message: "Server Error",
         });
