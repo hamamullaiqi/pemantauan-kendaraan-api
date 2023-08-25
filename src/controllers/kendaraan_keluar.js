@@ -8,6 +8,7 @@ const {
     timbangan_kendaraan,
     vendor,
     produk,
+    user,
 } = require("../../models");
 
 let router = Router();
@@ -45,9 +46,9 @@ router = createCrud({
         }
         // console.log(searchRegEx);
         return {
-            // attributes: {
-            //     exclude: ["createdAt", "updatedAt"],
-            // },
+            attributes: {
+                exclude: ["petugas_id", "produk_id", "vendor_id"],
+            },
             include: [
                 {
                     model: vendor,
@@ -61,6 +62,20 @@ router = createCrud({
                     as: "produkKeluar",
                     attributes: {
                         exclude: ["createdAt", "updatedAt"],
+                    },
+                },
+                {
+                    model: user,
+                    as: "petugasKeluar",
+                    attributes: {
+                        exclude: [
+                            "createdAt",
+                            "updatedAt",
+                            "password",
+                            "id",
+                            "role",
+                            "image",
+                        ],
                     },
                 },
             ],
