@@ -1,9 +1,8 @@
 import { createCrud } from "../utils/createCrud";
-import getValidateInput from "../services/getValidateInput";
-import { Op } from "sequelize";
 import getValidateInputUser from "../services/getValidateInputUser";
+import { Op } from "sequelize";
 const { user } = require("../../models");
-import bcrypt from "bcrypt";
+import { hasPassword } from "../services/users";
 
 const userCtrl = createCrud({
     models: user,
@@ -11,9 +10,14 @@ const userCtrl = createCrud({
     onBeforeSave: async (body) => {
         getValidateInputUser(body);
         const { password, ...rest } = body;
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        return { ...rest, password: hashedPassword };
+        const hasedPassord = await hasPassword(password);
+        return { ...rest, password: hasedPassord };
+    },
+    onBeforeUpdate: async (body) => {
+        getValidateInputUser(body);
+        const { password, ...rest } = body;
+        const hasedPassord = await hasPassword(password);
+        return { ...rest, password: hasedPassord };
     },
     option: (req, res) => {
         const { search, filters } = req.query;
@@ -29,7 +33,7 @@ const userCtrl = createCrud({
         // console.log(searchRegEx);
         return {
             attributes: {
-                exclude: ["createdAt", "updatedAt"],
+                exclude: ["createdAt", "updatedAt", "password"],
             },
             where: toFilters,
         };
